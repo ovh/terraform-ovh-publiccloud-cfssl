@@ -1,0 +1,4 @@
+os_region_name = "BHS3"
+os_tenant_id = "<projectID>"
+os_auth_url = "https://auth.cloud.ovh.net/v2.0/"
+os_flavor = "s1-2"

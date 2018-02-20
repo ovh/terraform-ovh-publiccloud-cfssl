@@ -1,0 +1,24 @@
+Cfssl public server example
+==========
+
+Configuration in this directory creates set of openstack resources which will spawn a Cfssl server with a public internet IPv4.
+
+It will: 
+
+* Create an openstack networking security group to allow remote 22 tcp connections, thus allowing ssh post provisionning
+* Spawn a public openstack instance.
+* Post provision the instance with all the necessary resources to bootstrap a full working cfssl server.
+
+Usage
+=====
+
+To run this example you need to execute:
+
+```bash
+$ terraform init
+$ terraform apply -var os_region_name=BHS3
+...
+$ terraform destroy -var os_region_name=BHS3
+```
+
+Note that this example may create resources which can cost money (Openstack Instance, for example). Run `terraform destroy` when you don't need these resources.

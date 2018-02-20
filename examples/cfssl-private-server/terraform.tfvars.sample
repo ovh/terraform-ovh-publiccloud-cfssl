@@ -1,0 +1,6 @@
+os_region_name = "DE1"
+os_tenant_id = "<projectID>"
+os_auth_url = "https://auth.cloud.ovh.net/v2.0/"
+os_flavor = "b2-7"
+private_sshkey = "~/.ssh/id_rsa"
+public_sshkey = "~/.ssh/id_rsa.pub"

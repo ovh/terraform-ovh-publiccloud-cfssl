@@ -1,0 +1,41 @@
+[Unit]
+Description=Cfssl simple pki
+
+[Service]
+Restart=on-failure
+RestartSec=10s
+User=cfssl
+
+Environment=CERTS_PATH=/opt/cfssl/certs
+Environment=CACERT_PATH=/opt/cfssl/cacert
+Environment=CA_VALIDITY_PERIOD=43800h
+Environment=CERT_VALIDITY_PERIOD=8760h
+Environment=CN=local
+Environment=C=FR
+Environment=L=Roubaix
+Environment=O=MyOrg
+Environment=OU=59
+Environment=ST=Nord
+
+# ecdsa 256 seems to be unsupported by curl in some configurations (eg: 7.29.0/openssl 1.0.2k-fips). stick to rsa
+Environment=KEY_ALGO=rsa
+Environment=KEY_SIZE=2048
+Environment=CFSSL_HOSTNAMES=PRIVIP,127.0.0.1,localhost
+Environment=CFSSL_BIND=127.0.0.1
+Environment=CFSSL_PORT=8888
+
+EnvironmentFile=-/etc/sysconfig/cfssl.conf
+
+ExecStartPre=/opt/cfssl/bin/cfssl-manage initca
+ExecStartPre=/opt/cfssl/bin/cfssl-manage cfsslcert
+ExecStart=/opt/cfssl/bin/cfssl serve \
+        -address ${CFSSL_BIND} \
+        -port ${CFSSL_PORT} \
+        -ca ${CACERT_PATH}/ca.pem \
+        -ca-key ${CACERT_PATH}/ca-key.pem \
+        -config ${CACERT_PATH}/ca-config.json \
+        -tls-cert ${CERTS_PATH}/cert.pem \
+        -tls-key ${CERTS_PATH}/cert-key.pem
+
+[Install]
+WantedBy=network.target

@@ -1,0 +1,135 @@
+#!/bin/bash
+# shellcheck source=/dev/null
+source "$(dirname "$0")/functions.sh"
+
+# documentation on how to setup a cfssl server can be found here:
+# https://medium.com/@vrmvrm/setup-cloudflare-cfssl-with-ocsp-responder-aba44b4134e6
+
+function cfsslcert(){
+    # Create the cfssl certificate signing request:
+    if [ -s "${CERTS_PATH}/cert.pem" ] || [  -s "${CERTS_PATH}/cert-key.pem" ]; then
+        echo "using existing cfssl cert" >&1
+    else
+        mkdir -p ${CERTS_PATH}
+        cat > "${CERTS_PATH}/cfssl-csr.json" <<EOF
+{
+  "CN": "cfssl",
+  "key": {
+    "algo": "${KEY_ALGO}",
+    "size": ${KEY_SIZE}
+  },
+  "names": [
+    {
+      "C": "${C}",
+      "L": "${L}",
+      "O": "${O}:cfssl",
+      "OU": "${OU}",
+      "ST": "${ST}"
+    }
+  ]
+}
+EOF
+
+        # Generate the cfssl client certificate and private key:
+        (cd ${CERTS_PATH} && "${SCRIPT_DIR}/cfssl" gencert \
+                                   -ca="${CACERT_PATH}/ca.pem" \
+                                   -ca-key="${CACERT_PATH}/ca-key.pem" \
+                                   -config="${CACERT_PATH}/ca-config.json" \
+                                   -hostname="${CFSSL_HOSTNAMES//PRIVIP/$(getprivipaddr)}" \
+                                   -profile=server \
+                                   ${CERTS_PATH}/cfssl-csr.json | "${SCRIPT_DIR}/cfssljson" -bare cert)
+
+        if [ ! -s "${CERTS_PATH}/cert.pem" ] || [ ! -s "${CERTS_PATH}/cert-key.pem" ]; then
+            echo "failed to gen cfssl cert" >&1
+            exit 1
+        fi
+        chmod 0600 "${CERTS_PATH}/cert.pem" "${CERTS_PATH}/cert-key.pem"
+    fi
+}
+
+function initca(){
+    # Create the CA configuration file:
+    if [ ! -s "${CACERT_PATH}/ca-config.json" ]; then
+        mkdir -p ${CACERT_PATH}
+        cat > "${CACERT_PATH}/ca-config.json" <<EOF
+{
+  "signing": {
+    "default": {
+      "expiry": "${CERT_VALIDITY_PERIOD}",
+      "crl_url": "https://$(getprivipaddr):8888/crl",
+      "usages": [ "signing", "key encipherment", "client auth" ]
+    },
+    "profiles": {
+      "ocsp": {
+        "usages": ["digital signature", "ocsp signing"],
+        "expiry": "${CA_VALIDITY_PERIOD}"
+      },
+      "intermediate": {
+        "usages": ["cert sign", "crl sign"],
+        "expiry": "${CA_VALIDITY_PERIOD}",
+        "ca_constraint": {"is_ca": true}
+      },
+      "server": {
+        "usages": ["signing", "key encipherment", "server auth", "client auth"],
+        "expiry": "${CERT_VALIDITY_PERIOD}"
+      },
+      "client": {
+        "usages": ["signing", "key encipherment", "client auth"],
+        "expiry": "${CERT_VALIDITY_PERIOD}"
+      }
+    }
+  }
+}
+EOF
+    fi
+
+    if openssl verify -CAfile "${CACERT_PATH}/ca.pem" "${CACERT_PATH}/ca.pem" \
+           && [ -s "${CACERT_PATH}/ca-key.pem" ]; then
+        echo "using existing cacert" >&1
+    else
+        echo "generating new cacert" >&1
+
+        # Create the CA certificate signing request:
+        cat > "${CACERT_PATH}/ca-csr.json" <<EOF
+{
+  "CN": "${CN}",
+  "key": {
+    "algo": "${KEY_ALGO}",
+    "size": ${KEY_SIZE}
+  },
+  "names": [
+    {
+      "C": "${C}",
+      "L": "${L}",
+      "O": "${O}",
+      "OU": "${OU}",
+      "ST": "${ST}"
+    }
+  ]
+}
+EOF
+
+        # Generate the CA certificate and private key:
+        (cd "${CACERT_PATH}" && "${SCRIPT_DIR}/cfssl" gencert -initca ca-csr.json | "${SCRIPT_DIR}/cfssljson" -bare ca)
+        if [ ! -s "${CACERT_PATH}/ca.pem" ] || [ ! -s "${CACERT_PATH}/ca-key.pem" ]; then
+            echo "failed to gen cacert" >&1
+            exit 1
+        fi
+        chmod 0600 "${CACERT_PATH}/ca-key.pem"
+    fi
+}
+
+case $1 in
+    initca)
+        log user.info "initca"
+        initca
+        ;;
+    cfsslcert)
+        log user.info "cfsslcert"
+        cfsslcert
+        ;;
+    *)
+        log user.error "unknown command"
+        exit 1
+        ;;
+esac
