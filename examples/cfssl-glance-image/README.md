@@ -1,6 +1,6 @@
 # Cfssl Glance Image
 
-This folder shows an example of how to use the [install-cfssl](../../modules/install-cfssl) and [install-dnsmasq](../..//modules/install-dnsmasq) modules with [Packer](https://www.packer.io/) to create an [an Openstack Glance Image](https://docs.openstack.org/glance/latest/) that has Cfssl and Dnsmasq installed on top of CensOS 7.
+This folder shows an example of how to use the [install-cfssl](../../modules/install-cfssl) module with [Packer](https://www.packer.io/) to create an [an Openstack Glance Image](https://docs.openstack.org/glance/latest/) that has Cfssl installed on top of CensOS 7.
 
 This image will have [Cfssl](https://www.cfssl.io/) installed. To see how to deploy this image, check out the [module's main script](../../README.md). 
 
@@ -13,7 +13,7 @@ To build the Cfssl Glance Image:
 1. `git clone` this repo to your computer.
 1. Install [Packer](https://www.packer.io/).
 1. Configure your Openstack credentials using one of the [options supported by the Openstack API](https://developer.openstack.org/api-guide/quick-start/api-quick-start.html). 
-1. Update the `variables` section of the `cfssl.json` Packer template to configure the Openstack region, Cfssl version, and Dnsmasq version you wish to use.
+1. Update the `variables` section of the `cfssl.json` Packer template to configure the Openstack region, Cfssl version you wish to use.
 1. Run `packer build centos7-cfssl.json`.
 1. Or run `make centos7-cfssl`.
 
@@ -33,8 +33,7 @@ When creating your own Packer template for production usage, you can copy the ex
   },{
     "type": "shell",
     "inline": [
-      "/tmp/terraform-ovh-publiccloud-cfssl/modules/install-cfssl/install-cfssl --version {{user `cfssl_version`}}",
-      "/tmp/terraform-ovh-publiccloud-cfssl/modules/install-dnsmasq/install-dnsmasq"
+      "/tmp/terraform-ovh-publiccloud-cfssl/modules/install-cfssl/install-cfssl --version {{user `cfssl_version`}}"
     ],
     "pause_before": "30s"
   }]
