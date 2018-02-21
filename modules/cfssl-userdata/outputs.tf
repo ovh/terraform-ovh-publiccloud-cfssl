@@ -7,3 +7,8 @@ output "conf" {
   description = "The configuration to be installed in /etc/sysconfig/cfssl.conf"
   value = "${data.template_file.conf.rendered}"
 }
+
+output "endpoint" {
+  description = "The cfssl endpoint"
+  value = "${local.cfssl_endpoint}"
+}

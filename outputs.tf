@@ -22,6 +22,10 @@ output "public_ipv4_dns" {
   value = "${join("", data.template_file.public_ipv4_dns.*.rendered)}"
 }
 
+output "endpoint" {
+  value = "${module.userdata.endpoint}"
+}
+
 output "private_endpoint" {
   value = "${var.associate_private_ipv4 ? format("https://%s:8888", join("", data.template_file.ipv4_addr.*.rendered)) : ""}"
 }
