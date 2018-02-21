@@ -77,6 +77,8 @@ resource "openstack_networking_port_v2" "public_port_cfssl" {
 
 data "template_file" "public_ipv4_addr" {
   count    = "${var.associate_public_ipv4 ? 1 : 0}"
+
+  # join all ips as string > remove every ipv6 > split & compact
   template = "${join("", compact(split(",", replace(join(",", flatten(openstack_networking_port_v2.public_port_cfssl.*.all_fixed_ips)), "/[[:alnum:]]+:[^,]+/", ""))))}"
 }
 
