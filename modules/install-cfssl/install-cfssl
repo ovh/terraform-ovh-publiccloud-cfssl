@@ -194,12 +194,6 @@ function install {
   setup_systemd_services "$user"
 
   log_info "Cfssl install complete!"
-  log_info "Cleaning install & cloudy files!"
-  sudo rm -Rf /var/lib/cloud/* /tmp/* /etc/machine-id
-  if [ -d /boot/coreos ]; then
-      sudo touch /boot/coreos/first_boot
-  fi
-
 }
 
 install "$@"

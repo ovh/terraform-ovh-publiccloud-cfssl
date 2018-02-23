@@ -29,7 +29,9 @@
     },{
         "type": "shell",
         "inline": [
-            "/tmp/modules/install-cfssl/install-cfssl --version {{user `cfssl_version`}} --sha256sum {{user `cfssl_sha256sum`}}"
+            "/tmp/modules/install-cfssl/install-cfssl --version {{user `cfssl_version`}} --sha256sum {{user `cfssl_sha256sum`}}",
+            "sudo rm -Rf /var/lib/cloud/* /tmp/* /etc/machine-id",
+            "if [ -d /boot/coreos ]; sudo touch /boot/coreos/first_boot; fi"
         ],
         "pause_before": "30s"
     }]
