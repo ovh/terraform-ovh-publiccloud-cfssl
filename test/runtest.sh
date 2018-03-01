@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 DIR=${1:-$(dirname $0)/../examples/cfssl-public-server}
 REGION=${2:-$OS_REGION_NAME}
