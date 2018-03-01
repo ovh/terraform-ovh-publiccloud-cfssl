@@ -70,11 +70,6 @@ variable "ssh_user" {
   default     = "core"
 }
 
-variable "ssh_private_key" {
-  description = "The ssh private key used to post provision the cfssl server. This is required if `post_install_modules` is set to `true`. It must be set accordingly to `ssh_key_pair"
-  default     = ""
-}
-
 variable "ssh_bastion_host" {
   description = "The address of the bastion host used to post provision the cfssl server. This may be required if `post_install_modules` is set to `true`"
   default     = ""
@@ -82,11 +77,6 @@ variable "ssh_bastion_host" {
 
 variable "ssh_bastion_user" {
   description = "The ssh username of the bastion host used to post provision the cfssl server. This may be required if `post_install_modules` is set to `true`"
-  default     = ""
-}
-
-variable "ssh_bastion_private_key" {
-  description = "The ssh private key of the bastion host used to post provision the cfssl server. This may be required if `post_install_modules` is set to `true`"
   default     = ""
 }
 

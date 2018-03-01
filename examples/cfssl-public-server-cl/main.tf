@@ -30,7 +30,6 @@ module "cfssl" {
   image_name                = "CoreOS Stable"
   flavor_name               = "${var.os_flavor_name}"
   public_security_group_ids = ["${openstack_networking_secgroup_v2.sg.id}"]
-  ssh_private_key           = "${file(var.private_sshkey)}"
   post_install_modules      = true
   associate_public_ipv4     = true
   associate_private_ipv4    = false

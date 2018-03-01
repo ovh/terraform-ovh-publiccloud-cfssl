@@ -70,9 +70,7 @@ The install script can also be post provisionned using this folder as a terrafor
 
 Here's a usage example:
 
-
 ```hcl
-
 module "provision_cfssl" {
   source                  = "github.com/ovh/terraform-ovh-publiccloud-cfssl//modules/install-cfssl"
   count                   = N
@@ -81,9 +79,7 @@ module "provision_cfssl" {
   triggers                = ["A list of trigger values"]
   ipv4_addrs              = ["192.168.1.200"]
   ssh_user                = "centos"
-  ssh_private_key         = "${file("~/.ssh/id_rsa")}"
   ssh_bastion_host        = "34.234.13.XX"
   ssh_bastion_user        = "core"
-  ssh_bastion_private_key = "${file("~/.ssh/id_rsa")}"
 }
 ```

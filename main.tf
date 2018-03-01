@@ -164,8 +164,6 @@ module "post_install_cfssl" {
   triggers                = ["${join("", coalescelist(openstack_compute_instance_v2.multinet_cfssl.*.id, openstack_compute_instance_v2.singlenet_cfssl.*.id))}"]
   ipv4_addrs              = ["${join("", coalescelist(openstack_compute_instance_v2.multinet_cfssl.*.access_ip_v4, openstack_compute_instance_v2.singlenet_cfssl.*.access_ip_v4))}"]
   ssh_user                = "${var.ssh_user}"
-  ssh_private_key         = "${var.ssh_private_key}"
   ssh_bastion_host        = "${var.ssh_bastion_host}"
   ssh_bastion_user        = "${var.ssh_bastion_user}"
-  ssh_bastion_private_key = "${var.ssh_bastion_private_key}"
 }

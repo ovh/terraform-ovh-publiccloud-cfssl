@@ -2,7 +2,10 @@
 
 REGIONS=${1:-$OS_REGION_NAME}
 DIRS=(cfssl-public-server cfssl-private-server cfssl-public-server-cl cfssl-private-server-cl)
-#DIRS=(cfssl-public-server)
+
+if [ ! -f "$SSH_AUTH_SOCK" ]; then
+    eval $(ssh-agent) && ssh-add ${TEST_SSH_PRIVATE_KEY:-$HOME/.ssh/id_rsa}
+fi
 
 EXIT=0
 for d in ${DIRS[@]}; do
