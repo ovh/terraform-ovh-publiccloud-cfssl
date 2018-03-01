@@ -4,8 +4,6 @@
         "identity_endpoint": "{{env `OS_AUTH_URL`}}",
         "region": "{{env `OS_REGION_NAME`}}",
         "ext_net_id": "",
-        "cfssl_version": "R1.2",
-        "cfssl_sha256sum": "eb34ab2179e0b67c29fd55f52422a94fe751527b06a403a79325fed7cf0145bd",
         "ssh_username": "core",
         "source_image_name": "CoreOS Stable"
     },
@@ -29,9 +27,9 @@
     },{
         "type": "shell",
         "inline": [
-            "/tmp/modules/install-cfssl/install-cfssl --version {{user `cfssl_version`}} --sha256sum {{user `cfssl_sha256sum`}}",
+            "/tmp/modules/install-cfssl/install-cfssl",
             "sudo rm -Rf /var/lib/cloud/* /tmp/* /etc/machine-id",
-            "if [ -d /boot/coreos ]; sudo touch /boot/coreos/first_boot; fi"
+            "if [ -d /boot/coreos ]; then sudo touch /boot/coreos/first_boot; fi"
         ],
         "pause_before": "30s"
     }]

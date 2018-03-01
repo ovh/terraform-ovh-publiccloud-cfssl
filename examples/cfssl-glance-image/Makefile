@@ -1,22 +1,23 @@
 OS_REGION_NAME ?= GRA3
 PACKERBIN ?= $(shell which packer-io || which packer)
+TERRAFORMBIN ?= $(shell which terraform)
 
-all: centos7-cfssl coreos-cfssl
+all: centos7 coreos
 
-.terraform:
-	@terraform init
-
-ext_net_id:
-	@terraform apply -var region=$(OS_REGION_NAME) > /dev/null 2>&1
-
-centos7-cfssl: ext_net_id
+centos7: terraform.tfstate
 	$(PACKERBIN) build -var region=$(OS_REGION_NAME) \
 								-var source_image_name="Centos 7" \
                 -var ssh_username=centos \
-	           	  -var ext_net_id=$(shell terraform output | awk -F 'ext_net_id = ' '/ext_net_id/ {print $$2}') \
+	           	  -var ext_net_id=$(shell $(TERRAFORMBIN) output ext_net_id) \
 				  packer.json
 
-coreos-cfssl: ext_net_id
+coreos: terraform.tfstate
 	$(PACKERBIN) build -var region=$(OS_REGION_NAME) \
-	           	  -var ext_net_id=$(shell terraform output | awk -F 'ext_net_id = ' '/ext_net_id/ {print $$2}') \
+	           	  -var ext_net_id=$(shell $(TERRAFORMBIN) output ext_net_id) \
 				  packer.json
+
+.terraform:
+	@$(TERRAFORMBIN) init
+
+terraform.tfstate: .terraform
+	@$(TERRAFORMBIN) apply -var region=$(OS_REGION_NAME) > /dev/null 2>&1

@@ -8,6 +8,8 @@ readonly DEFAULT_CFSSL_USER="cfssl"
 readonly DEFAULT_CFSSL_USER_UID="1011"
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_NAME="$(basename "$0")"
+readonly DEFAULT_VERSION="R1.2"
+readonly DEFAULT_SHA256SUM="eb34ab2179e0b67c29fd55f52422a94fe751527b06a403a79325fed7cf0145bd"
 
 function print_usage {
   echo
@@ -146,6 +148,8 @@ function install {
   local version=""
   local path="$DEFAULT_INSTALL_PATH"
   local user="$DEFAULT_CFSSL_USER"
+  local version="$DEFAULT_VERSION"
+  local sha256sum="$DEFAULT_SHA256SUM"
 
   while [[ $# > 0 ]]; do
     local key="$1"
