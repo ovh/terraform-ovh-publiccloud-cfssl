@@ -19,7 +19,6 @@ module "cfssl" {
   source = "../.."
 
   name                      = "${var.name}"
-  region                    = "${var.os_region_name}"
   image_name                = "CoreOS Stable Cfssl"
   flavor_name               = "${var.os_flavor_name}"
   associate_public_ipv4     = true

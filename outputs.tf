@@ -6,20 +6,12 @@ output "public_security_group_id" {
   value = "${join("", openstack_networking_secgroup_v2.public_servers_sg.*.id)}"
 }
 
-output "instance_id" {
-  value = "${data.template_file.cfssl_instance_id.rendered}"
-}
-
 output "private_ipv4_addr" {
-  value = "${join( "", data.template_file.ipv4_addr.*.rendered)}"
+  value = "${join( "", data.template_file.private_ipv4_addr.*.rendered)}"
 }
 
 output "public_ipv4_addr" {
   value = "${join( "", data.template_file.public_ipv4_addr.*.rendered)}"
-}
-
-output "public_ipv4_dns" {
-  value = "${join("", data.template_file.public_ipv4_dns.*.rendered)}"
 }
 
 output "endpoint" {
@@ -27,7 +19,7 @@ output "endpoint" {
 }
 
 output "private_endpoint" {
-  value = "${var.associate_private_ipv4 ? format("https://%s:8888", join("", data.template_file.ipv4_addr.*.rendered)) : ""}"
+  value = "${var.associate_private_ipv4 ? format("https://%s:8888", join("", data.template_file.private_ipv4_addr.*.rendered)) : ""}"
 }
 
 output "public_endpoint" {

@@ -1,7 +1,3 @@
-variable "region" {
-  description = "The OVH region name"
- }
-
 variable "image_id" {
   description = "The ID of the glance image to spawn the instance. If `post_install_modules` is set to `false`, this should be an image built from the Packer template under examples/cfssl-glance-image/cfssl.json. If the default value is used, Terraform will look up the latest image build automatically."
   default     = ""
@@ -117,26 +113,6 @@ variable "associate_public_ipv4" {
 variable "associate_private_ipv4" {
   description = "Associate a private ipv4 with the cfssl nodes"
   default     = true
-}
-
-variable "ip_dns_domains" {
-  description = "Every public ipv4 addr at OVH is registered as a A record in DNS zones according to the format ip 1.2.3.4 > ip4.ip-q1-2-3.eu for EU regions or  ip4.ip-1-2-3.net for other ones. This variables maps the domain name to use according to the region."
-
-  default = {
-    GRA1 = "eu"
-    SBG3 = "eu"
-    GRA3 = "eu"
-    SBG3 = "eu"
-    BHS3 = "net"
-    WAW1 = "eu"
-    DE1  = "eu"
-    UK1  = "eu"
-  }
-}
-
-variable "default_ip_dns_domains" {
-  description = "Default value for `ip_dns_domains`"
-  default     = "net"
 }
 
 variable "ca_validity_period" {

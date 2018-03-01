@@ -26,7 +26,6 @@ module "cfssl" {
   source = "../.."
 
   name                      = "${var.name}"
-  region                    = "${var.os_region_name}"
   ssh_authorized_keys       = ["${file(var.public_sshkey)}"]
   image_name                = "Centos 7"
   flavor_name               = "${var.os_flavor_name}"

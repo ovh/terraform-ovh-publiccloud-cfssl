@@ -30,7 +30,6 @@ module "cfssl" {
   source = "../.."
 
   name                    = "${var.name}"
-  region                  = "${var.os_region_name}"
   ssh_authorized_keys     = ["${file(var.public_sshkey)}"]
   subnet_id               = "${module.network.private_subnets[0]}"
   image_name              = "CoreOS Stable"

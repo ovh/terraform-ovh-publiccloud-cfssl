@@ -19,7 +19,6 @@ module "cfssl" {
   source = "../.."
 
   name                      = "${var.name}"
-  region                    = "${var.os_region_name}"
   image_name                = "Centos 7 Cfssl"
   flavor_name               = "${var.os_flavor_name}"
   ignition_mode             = false

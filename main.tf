@@ -169,36 +169,3 @@ module "post_install_cfssl" {
   ssh_bastion_user        = "${var.ssh_bastion_user}"
   ssh_bastion_private_key = "${var.ssh_bastion_private_key}"
 }
-
-# This is somekind of a hack to ensure that when cfssl ids is output and made
-# available to other resources outside the module, the node has been fully provisionned
-data "template_file" "cfssl_instance_id" {
-  template = "$${cfssl_id}"
-
-  vars {
-    cfssl_id         = "${join("", coalescelist(openstack_compute_instance_v2.multinet_cfssl.*.id, openstack_compute_instance_v2.singlenet_cfssl.*.id))}"
-    install_cfssl_id = "${module.post_install_cfssl.install_id}"
-  }
-}
-
-data "template_file" "ipv4_addr" {
-  template = "${join("", compact(split(",", replace(join(",", flatten(openstack_networking_port_v2.port_cfssl.*.all_fixed_ips)), "/[[:alnum:]]+:[^,]+/", ""))))}"
-
-  vars {
-    cfssl_id = "${data.template_file.cfssl_instance_id.rendered}"
-  }
-}
-
-data "template_file" "public_ipv4_dns" {
-  count    = "${var.associate_public_ipv4 ? 1 : 0}"
-  template = "ip$${ip4}.ip-$${ip1}-$${ip2}-$${ip3}.$${domain}"
-
-  vars {
-    cfssl_id = "${data.template_file.cfssl_instance_id.rendered}"
-    ip1      = "${element(split(".", data.template_file.public_ipv4_addr.rendered), 0)}"
-    ip2      = "${element(split(".", data.template_file.public_ipv4_addr.rendered), 1)}"
-    ip3      = "${element(split(".", data.template_file.public_ipv4_addr.rendered), 2)}"
-    ip4      = "${element(split(".", data.template_file.public_ipv4_addr.rendered), 3)}"
-    domain   = "${lookup(var.ip_dns_domains, var.region, var.default_ip_dns_domains)}"
-  }
-}
