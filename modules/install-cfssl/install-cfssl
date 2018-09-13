@@ -85,14 +85,13 @@ function install_dependencies {
     log_info "Installing dependencies"
 
     if [ -n "$(command -v yum)" ]; then
-        (sudo yum upgrade -y && sudo yum install -y curl) >/dev/null
+        (sudo yum install -y curl) >/dev/null
     elif [ -n "$(command -v apt-get)" ] && [ -n "$(command -v ubuntu-bug)" ]; then
-        log_info "Ubuntu based. upgrading system."
-        (sudo apt-get update -y && sudo apt-get upgrade -y) >/dev/null
+        log_info "Ubuntu based. Nothing to do."
     elif [ -n "$(command -v coreos-install)" ]; then
         log_info "Nothing to do for coreos"
     else
-        log_error "Could not find yum. Cannot install dependencies on this OS."
+        log_error "Unsupported OS."
         exit 1
     fi
 }

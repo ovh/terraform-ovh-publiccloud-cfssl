@@ -67,17 +67,32 @@
             }
         }
     ],
-    "provisioners": [{
-        "type": "file",
-        "source": "{{template_dir}}/../../modules",
-        "destination": "/tmp"
-    },{
-        "type": "shell",
-        "inline": [
-            "/tmp/modules/install-cfssl/install-cfssl",
-            "sudo rm -Rf /var/lib/cloud/* /tmp/* /etc/machine-id",
-            "if [ -d /boot/coreos ]; then sudo touch /boot/coreos/first_boot; fi"
-        ],
-        "pause_before": "30s"
-    }]
+    "provisioners": [
+        {
+            "type": "file",
+            "source": "{{template_dir}}/../../modules",
+            "destination": "/tmp"
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "/tmp/modules/install-cfssl/system-upgrade.sh"
+            ]
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "/tmp/modules/install-cfssl/install-cfssl"
+            ]
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "echo cleaning server files > /dev/stderr",
+                "sudo rm -Rf /var/lib/cloud/data/* /var/lib/cloud/instances/* /tmp/modules /etc/ssh/ssh_host*key*",
+                "echo '' | sudo tee /etc/machine-id",
+                "if [ -d /boot/coreos ]; then sudo touch /boot/coreos/first_boot; fi"
+            ]
+        }
+    ]
 }
