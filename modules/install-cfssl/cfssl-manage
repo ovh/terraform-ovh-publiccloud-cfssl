@@ -65,7 +65,7 @@ function initca(){
         "expiry": "${CA_VALIDITY_PERIOD}"
       },
       "intermediate": {
-        "usages": ["cert sign", "crl sign"],
+        "usages": [ "signing", "cert sign", "crl sign", "key encipherment" ],
         "expiry": "${CA_VALIDITY_PERIOD}",
         "ca_constraint": {"is_ca": true}
       },
