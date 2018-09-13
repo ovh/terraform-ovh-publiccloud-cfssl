@@ -4,20 +4,67 @@
         "identity_endpoint": "{{env `OS_AUTH_URL`}}",
         "region": "{{env `OS_REGION_NAME`}}",
         "ext_net_id": "",
-        "ssh_username": "core",
-        "source_image_name": "CoreOS Stable"
+        "tag": "latest",
+        "image_name": "",
+        "commit": ""
     },
     "builders": [
         {
+            "name": "coreos",
             "type": "openstack",
             "identity_endpoint": "{{user `identity_endpoint`}}",
             "region": "{{user `region`}}",
-            "ssh_username": "{{user `ssh_username`}}",
-            "image_name": "{{user `source_image_name`}} Cfssl",
-            "source_image_name": "{{user `source_image_name`}}",
+            "ssh_username": "core",
+            "image_name": "{{user `image_name`}}",
+            "source_image_name": "CoreOS Stable",
             "ssh_ip_version": "4",
             "flavor": "s1-2",
-            "networks": ["{{user `ext_net_id`}}"]
+            "networks": [
+                "{{user `ext_net_id`}}"
+            ],
+            "metadata": {
+                "tag": "{{user `tag`}}",
+                "commit": "{{user `commit`}}",
+                "community": "ovh"
+            }
+        },
+        {
+            "name": "centos7",
+            "type": "openstack",
+            "identity_endpoint": "{{user `identity_endpoint`}}",
+            "region": "{{user `region`}}",
+            "ssh_username": "centos",
+            "image_name": "{{user `image_name`}}",
+            "source_image_name": "Centos 7",
+            "ssh_ip_version": "4",
+            "flavor": "s1-2",
+            "networks": [
+                "{{user `ext_net_id`}}"
+            ],
+            "metadata": {
+                "tag": "{{user `tag`}}",
+                "commit": "{{user `commit`}}",
+                "community": "ovh"
+            }
+        },
+        {
+            "name": "ubuntu1604",
+            "type": "openstack",
+            "identity_endpoint": "{{user `identity_endpoint`}}",
+            "region": "{{user `region`}}",
+            "ssh_username": "ubuntu",
+            "image_name": "{{user `image_name`}}",
+            "source_image_name": "Ubuntu 16.04",
+            "ssh_ip_version": "4",
+            "flavor": "s1-2",
+            "networks": [
+                "{{user `ext_net_id`}}"
+            ],
+            "metadata": {
+                "tag": "{{user `tag`}}",
+                "commit": "{{user `commit`}}",
+                "community": "ovh"
+            }
         }
     ],
     "provisioners": [{

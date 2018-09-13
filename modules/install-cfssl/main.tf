@@ -23,7 +23,7 @@ resource "null_resource" "post_install" {
 
   provisioner "remote-exec" {
     inline = [
-      "/bin/sh /tmp/install-cfssl/install-cfssl --version ${var.cfssl_version} --sha256sum ${var.cfssl_sha256sum}"
+      "/bin/bash /tmp/install-cfssl/install-cfssl --version ${var.cfssl_version} --sha256sum ${var.cfssl_sha256sum}"
     ]
   }
 }

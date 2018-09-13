@@ -85,7 +85,10 @@ function install_dependencies {
     log_info "Installing dependencies"
 
     if [ -n "$(command -v yum)" ]; then
-        sudo yum install -y curl unzip nmap-ncat bind-utils jq
+        (sudo yum upgrade -y && sudo yum install -y curl) >/dev/null
+    elif [ -n "$(command -v apt-get)" ] && [ -n "$(command -v ubuntu-bug)" ]; then
+        log_info "Ubuntu based. upgrading system."
+        (sudo apt-get update -y && sudo apt-get upgrade -y) >/dev/null
     elif [ -n "$(command -v coreos-install)" ]; then
         log_info "Nothing to do for coreos"
     else
