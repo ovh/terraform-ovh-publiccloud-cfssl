@@ -89,6 +89,9 @@ function install_dependencies {
     elif [ -n "$(command -v apt-get)" ] && [ -n "$(command -v ubuntu-bug)" ]; then
         log_info "Ubuntu based. upgrading system."
         (sudo apt-get update -y && sudo apt-get upgrade -y) >/dev/null
+        # fix journald upgrade
+        (sudo delgroup --only-if-empty systemd-journal && sudo apt install -y systemd --reinstall) >/dev/null
+
     elif [ -n "$(command -v coreos-install)" ]; then
         log_info "Nothing to do for coreos"
     else
