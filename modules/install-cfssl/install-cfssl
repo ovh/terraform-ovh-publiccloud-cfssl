@@ -88,7 +88,13 @@ function install_dependencies {
         (sudo yum upgrade -y && sudo yum install -y curl) >/dev/null
     elif [ -n "$(command -v apt-get)" ] && [ -n "$(command -v ubuntu-bug)" ]; then
         log_info "Ubuntu based. upgrading system."
-        (sudo apt-get update -y && sudo apt-get upgrade -y) >/dev/null
+        # fix journald upgrade
+        # fix journald upgrade
+        export DEBIAN_FRONTEND=noninteractive
+        (sudo -E apt-get update -y) >/dev/null
+        sudo -E delgroup --only-if-empty systemd-journal
+        sudo -E apt-get install -y systemd --reinstall
+        (sudo -E apt-get upgrade -y) >/dev/null
     elif [ -n "$(command -v coreos-install)" ]; then
         log_info "Nothing to do for coreos"
     else
