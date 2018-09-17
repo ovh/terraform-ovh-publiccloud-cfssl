@@ -73,6 +73,14 @@ function initca(){
         "usages": ["signing", "key encipherment", "server auth", "client auth"],
         "expiry": "${CERT_VALIDITY_PERIOD}"
       },
+      "peer": {
+        "usages": ["signing", "key encipherment", "server auth", "client auth"],
+        "expiry": "${CERT_VALIDITY_PERIOD}"
+      },
+      "serverauthonly": {
+        "usages": ["signing", "key encipherment", "server auth"],
+        "expiry": "${CERT_VALIDITY_PERIOD}"
+      },
       "client": {
         "usages": ["signing", "key encipherment", "client auth"],
         "expiry": "${CERT_VALIDITY_PERIOD}"
