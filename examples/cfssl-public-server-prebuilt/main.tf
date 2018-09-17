@@ -1,17 +1,27 @@
 provider "openstack" {
   version   = "~> 1.2.0"
-  region    = "${var.os_region_name}"
-  tenant_id = "${var.os_tenant_id}"
-  auth_url  = "${var.os_auth_url}"
+  region    = "${var.region}"
 }
 
 
-# we explicitly don't set any ssh authorized key on the module,
-# and we don't open any public ssh access port to illustrate
-# that it could be quite easy to boot an immutable cfssl server.
-# Yet, as this module has no support for HA, we recommend
-# users to backup the server data regularly, as it contains
-# at least the CA keypair.
+data "http" "myip" {
+  url = "https://api.ipify.org/"
+}
+
+resource "openstack_networking_secgroup_v2" "sg" {
+  name        = "${var.name}_ssh_sg"
+  description = "${var.name} security group for cfssl provisionning"
+}
+
+resource "openstack_networking_secgroup_rule_v2" "in_traffic_cfssl" {
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "tcp"
+  remote_ip_prefix  = "${var.remote_ip_prefix == "" ? format("%s/32", data.http.myip.body) : var.remote_ip_prefix}"
+  port_range_min    = 8888
+  port_range_max    = 8888
+  security_group_id = "${openstack_networking_secgroup_v2.sg.id}"
+}
 
 module "cfssl" {
   #  source          = "ovh/publiccloud-cfssl/ovh"
@@ -20,6 +30,7 @@ module "cfssl" {
 
   name                      = "${var.name}"
   image_name                = "Centos 7 Cfssl"
+  public_security_group_ids = ["${openstack_networking_secgroup_v2.sg.id}"]
   flavor_name               = "${var.os_flavor_name}"
   ignition_mode             = false
   associate_public_ipv4     = true

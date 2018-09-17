@@ -28,7 +28,7 @@ data "template_cloudinit_config" "config" {
 ssh_authorized_keys:
   ${length(var.ssh_authorized_keys) > 0 ? indent(2, join("\n", formatlist("- %s", var.ssh_authorized_keys))) : ""}
 bootcmd:
-  ${var.cidr != "" ? indent(2, format(local.ip_route_add_tpl, var.cidr, "eth0")) : ""}
+  ${var.cidr != "" ? indent(2, format(local.ip_route_add_tpl, var.cidr, "eth0")) : "- echo nothing to do"}
 ca-certs:
   trusted:
     - ${var.cacert}

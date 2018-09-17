@@ -1,16 +1,5 @@
-variable "os_region_name" {
+variable "region" {
   description = "The Openstack region name"
-  default     = ""
-}
-
-variable "os_tenant_id" {
-  description = "The id of the openstack project"
-  default     = ""
-}
-
-variable "os_auth_url" {
-  description = "The OpenStack auth url"
-  default     = "https://auth.cloud.ovh.net/v2.0/"
 }
 
 variable "os_flavor_name" {
@@ -21,4 +10,9 @@ variable "os_flavor_name" {
 variable "name" {
   description = "The name of the setup. This attribute will be used to name openstack resources"
   default     = "mycfssl"
+}
+
+variable "remote_ip_prefix" {
+  description = "The remote IPv4 prefix used to filter cfssl remote traffic. If left blank, the public NATed IPv4 of the user will be used."
+  default     = ""
 }

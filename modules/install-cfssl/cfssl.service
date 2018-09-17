@@ -1,5 +1,6 @@
 [Unit]
 Description=Cfssl simple pki
+After=%AFTER%
 
 [Service]
 Restart=on-failure
@@ -36,6 +37,3 @@ ExecStart=/opt/cfssl/bin/cfssl serve \
         -config ${CACERT_PATH}/ca-config.json \
         -tls-cert ${CERTS_PATH}/cert.pem \
         -tls-key ${CERTS_PATH}/cert-key.pem
-
-[Install]
-WantedBy=network.target
