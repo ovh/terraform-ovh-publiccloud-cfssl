@@ -1,5 +1,7 @@
 [Unit]
 Description=Cfssl simple pki
+Wants=rngd.service rng-tools.service
+After=rngd.service rng-tools.service
 After=%AFTER%
 
 [Service]

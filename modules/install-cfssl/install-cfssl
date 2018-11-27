@@ -76,7 +76,6 @@ function setup_systemd_services {
         sudo systemctl add-wants multi-user.target cfssl.service
     fi
 
-
     # disable firewalld. TODO: make a proper setup for cfssl
     if systemctl list-unit-files --all | grep -q firewalld.service; then
         sudo systemctl stop firewalld
@@ -95,9 +94,10 @@ function install_dependencies {
     log_info "Installing dependencies"
 
     if [ -n "$(command -v yum)" ]; then
-        (sudo yum install -y curl) >/dev/null
+        (sudo yum install -y curl rng-tools) >/dev/null
     elif [ -n "$(command -v apt-get)" ] && [ -n "$(command -v ubuntu-bug)" ]; then
-        log_info "Ubuntu based. Nothing to do."
+        export DEBIAN_FRONTEND=noninteractive
+        sudo -E apt install -y -q rng-tools
     elif [ -n "$(command -v coreos-install)" ]; then
         log_info "Nothing to do for coreos"
     else

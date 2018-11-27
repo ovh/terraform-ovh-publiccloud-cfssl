@@ -12,6 +12,7 @@ elif [ -n "$(command -v apt-get)" ]; then
     sudo -E apt upgrade -y -q
 elif [ -n "$(command -v coreos-install)" ]; then
     echo "Nothing to do for coreos" >&2
+    sudo systemctl enable rngd.service
 else
     echo "Unsupported OS." >&2
     exit 1
